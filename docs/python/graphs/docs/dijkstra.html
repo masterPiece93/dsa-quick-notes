@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>dijkstra.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>dijkstra.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h1>Dijkstra Shortest Path Alogithm</h1>
+<blockquote>
+<p><em>This algorithm gives us the shortest path from a <code>source</code> node to all the other nodes</em></p>
+<p>Discovered By : <code>Edsger Wybe Dijkstra (1930–2002)</code></p>
+</blockquote>
+<h3>Problem Statement :</h3>
+<ul>
+<li>I want to reach from <code>delhi</code> to <code>banglore</code></li>
+<li>There are multiple fares ( based on flight/bus/car etc )</li>
+<li>There are multiple stops ( like maharashtra, pune, orrisa in between )</li>
+<li>
+<p>for e.g :</p>
+<ul>
+<li>
+<p><code>.delhi.</code> = via road =&gt; <code>.lucknow.</code> = via flight =&gt; <code>.pune.</code> = via train =&gt; <code>.Banglore.</code></p>
+</li>
+<li>
+<p>similarly there cane be multiple permutation and combinations</p>
+</li>
+</ul>
+</li>
+<li>
+<p>so we use Graph Theory ( a branch of mathemetics ) to solve these problems .</p>
+</li>
+</ul>
+<h3>Coverting Problem Statement to Graph :</h3>
+<pre><code class="language-txt">               +--------------+               Car              +--------------+ 
+               |    Bihar     |o------------------------------*|    Orrisa    |
+               +--------------+           ( 7000 Rs )          +--------------+
+              *       o                                               *        o      car
+   Train     /        |                                               |         \  ( 1000 Rs )
+( 2000 Rs ) /         |                                               |          \ 
+           o          |                                               |           *
++---------+           |                                               |            +----------+
+|  Delhi  |           |    Flight                           Flight    |            | Banglore |
++---------+           | ( 1000 Rs )                       ( 2000 Rs ) |            +----------+
+           o          |                                               |          *
+            \         |                                               |         /   Flight
+   Flight    \        |                                               |        /   ( 5000 Rs ) 
+( 4000 Rs )   \       *                                               o       o
+               +--------------+              Flight            +--------------+ 
+               |    Lucknow   |o------------------------------*|     Pune     |
+               +--------------+            ( 3000 Rs )         +--------------+
+</code></pre>
+<blockquote>
+<p><strong>Dijkstra Result</strong> : <code>Delhi</code> -&gt; <code>Banglore</code> :  9000 Rs</p>
+</blockquote>
+<p>Route : <code>Delhi</code> -&gt; <code>Bihar</code> -&gt; <code>Lucknow</code> -&gt; <code>Pune</code> -&gt; <code>Orrisa</code>  -&gt; <code>Banglore</code> </p>
+<p><em>So this is how we solve Real-Life Problems with Dijkstra&rsquo;s Algorithm</em></p>
+<pre><code>Dijkstra Alogithm KeyPoints :
+
+- It follows greedy approach
+- It uses following datastructures
+    - priority queue
+
+- Note
+    - we are using weighted adjacency list representation ( for this example )
+    - this algo only works for positive weighted graphs
+        - for negetive weighted graphs we have `Bellman Ford's Algorithm`
+</code></pre>
+<hr />
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <h2>Graph Representation</h2>
+<blockquote>
+<p>Edge Explaination</p>
+</blockquote>
+<pre><code>0 --&gt; 1 , weight/cost : 2
+0 --&gt; 2 , weight/cost : 4
+1 --&gt; 2 , weight/cost : 1
+1 --&gt; 3 , weight/cost : 7
+2 --&gt; 4 , weight/cost : 3
+3 --&gt; 5 , weight/cost : 1
+4 --&gt; 5 , weight/cost : 5
+4 --&gt; 3 , weight/cost : 2
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">GRAPH_REPRESENTATION</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">                           +---+             7             +---+            </span>
+<span class="s2">                          *| 1 |o-------------------------*| 3 |o           </span>
+<span class="s2">                         / +---+                           +---+ \          </span>
+<span class="s2">                        /    o                               *    \         </span>
+<span class="s2">                     2 /     |                               |     \  1      </span>
+<span class="s2">                      /      |                               |      \       </span>
+<span class="s2">                     /       |                               |       \      </span>
+<span class="s2">                    o        |                               |        *     </span>
+<span class="s2">               +---+         |                               |         +---+</span>
+<span class="s2"> -             | 0 |         | 1                             | 2       | 5 |</span>
+<span class="s2">               +---+         |                               |         +---+</span>
+<span class="s2">                    o        |                               |        *     </span>
+<span class="s2">                     \       |                               |       /      </span>
+<span class="s2">                      \      |                               |      /       </span>
+<span class="s2">                     4 \     |                               |     /  5      </span>
+<span class="s2">                        \    *                               o    /         </span>
+<span class="s2">                         \ +---+                           +---+ /          </span>
+<span class="s2">                          *| 2 |o-------------------------*| 4 |o           </span>
+<span class="s2">                           +---+             3             +---+             </span>
+<span class="s2">&quot;&quot;&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <h2>Graph Tracing with Dijkstra</h2>
+<ul>
+<li>Lets Trace the paths manually as dijikstra would<ul>
+<li>we need to specify our <code>source</code> first</li>
+<li>dijkstra would find all shortest paths from this <code>source</code> to all nodes</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Let&rsquo;s select source node as <code>0</code></p>
+</blockquote>
+<h5>Path <code>0</code> to <code>0</code></h5>
+<ul>
+<li>0 ➤ 0 <strong>:</strong> ✗</li>
+</ul>
+<h5>Path <code>0</code> to <code>1</code></h5>
+<ul>
+<li>0 ➤ 1 <strong>:</strong> <em>2</em>    ✓</li>
+</ul>
+<h5>Path <code>0</code> to <code>2</code></h5>
+<ul>
+<li>0 ➤ 2 <strong>:</strong> <em>4</em> </li>
+<li>0 ➤ 1 ➤ 2 <strong>:</strong> <em>3</em>  ✓</li>
+</ul>
+<h5>Path <code>0</code> to <code>3</code></h5>
+<ul>
+<li>0 ➤ 2 ➤ 4 ➤ 3 <strong>:</strong> <em>9</em></li>
+<li>0 ➤ 1 ➤ 2 ➤ 4 ➤ 3 <strong>:</strong> <em>8</em></li>
+<li>0 ➤ 1 ➤ 3 <strong>:</strong> <em>9</em>  ✓</li>
+</ul>
+<h5>Path <code>0</code> to <code>4</code></h5>
+<ul>
+<li>0 ➤ 2 ➤ 4 <strong>:</strong> <em>7</em></li>
+<li>0 ➤ 1 ➤ 2 ➤ 4 <strong>:</strong> <em>6</em> ✓</li>
+</ul>
+<h5>Path <code>0</code> to <code>5</code></h5>
+<ul>
+<li>0 ➤ 2 ➤ 4 ➤ 5 <strong>:</strong> <em>12</em></li>
+<li>0 ➤ 1 ➤ 3 ➤ 5 <strong>:</strong> <em>10</em> ✓</li>
+<li>0 ➤ 1 ➤ 2 ➤ 4 ➤ 5 <strong>:</strong> <em>11</em></li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Imports</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">queue</span><span class="w"> </span><span class="kn">import</span> <span class="n">PriorityQueue</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Custom Types</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <ul>
+<li>a node ( vertex ) type</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">Node</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s1">&#39;Node&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <ul>
+<li>a weight/cost/priority type</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">Weight</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s1">&#39;Weight&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <ul>
+<li>a weight/cost of edge type</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">EdgeWeight</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s1">&#39;EdgeWeight&#39;</span><span class="p">,</span> <span class="n">Weight</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <ul>
+<li>a cost of path type</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">PathCost</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s1">&#39;PathCost&#39;</span><span class="p">,</span> <span class="n">Weight</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <ul>
+<li>a graph type</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">Graph</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s1">&#39;Graph&#39;</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Node</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Node</span><span class="p">,</span> <span class="n">EdgeWeight</span><span class="p">]]])</span> <span class="c1"># Weighted Adjacency List</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Graph ( in adjacency list repr )</p>
+<ul>
+<li>Terminology :<ul>
+<li><em><code>Key</code> is node</em></li>
+<li><em><code>Value</code> is a Set of ( neighbour_node, edge_weight )</em></li>
+</ul>
+</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">graph</span><span class="p">:</span> <span class="n">Graph</span> <span class="o">=</span> <span class="p">{</span>    <span class="c1"># Weighted Adjacency List</span>
+    <span class="mi">0</span><span class="p">:</span> <span class="p">{</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="p">},</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="p">{</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span> <span class="p">},</span>
+    <span class="mi">2</span><span class="p">:</span> <span class="p">{</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="p">},</span>
+    <span class="mi">3</span><span class="p">:</span> <span class="p">{</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="p">},</span>
+    <span class="mi">4</span><span class="p">:</span> <span class="p">{</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="p">},</span>
+    <span class="mi">5</span><span class="p">:</span> <span class="nb">set</span><span class="p">()</span>
+<span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>We have Following 3 Important key Concepts in Implementing this Algo</p>
+<h4>Edge Relaxation</h4>
+<pre><code class="language-txt">Sample :
+
+[C]
+* o
+|  \
+|   \
+|    \
+|     \
+o      *
+[A]o---*[B]
+</code></pre>
+<ul>
+<li>suppose we have a source selected as A for dijkstra</li>
+<li>let&rsquo;s suppose we are trying to explore the path to reach from [C] to [B]</li>
+<li>then we&rsquo;ll have to consider two things </li>
+<li>if there is an existing path of reaching [B] ( i.e from [A] ), then we&rsquo;ll call the cost of this path as -&gt; <code>Path-1-Cost</code></li>
+<li>and the cost of path that we are currently exploring via [C], we&rsquo;ll call this cost as - <code>Path-2-Cost</code><ul>
+<li>if Path-2-cost is calculated as follows :<ul>
+<li>existing-path-to-c <code>+</code> edge-cost-of-C-to-B</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>then , if <code>Path-2-Cost</code> &lt; <code>Path-1-Cost</code> , only then we&rsquo;ll update the existing-shortest-path-storage with this new <code>Path-1-Cost</code> value</li>
+</ul>
+<p>NOTE : we keep an <code>existing-shortest-path-storage</code> , which keeps the track of current shortest path to reach a node</p>
+<p>NOTE : we can keep <code>existing-shortest-path-storage</code> as a hashmap or a matrix , whichever suits the implementation .</p>
+<h4>Priority Queue</h4>
+<ul>
+<li>a priority queue is a special queue data structure that internally maintains an order of data points in a particular fashion based on a value at all times</li>
+<li>internally a priority queue is a heap data structure . heap datastructure can also have 2 flavours i) min heap ii) max heap</li>
+<li>basically at this point the only thing worth caring is that for Dijkstra Algorith we&rsquo;ll use <em>Min. Heap Priority Queue</em></li>
+</ul>
+<h4>BFS</h4>
+<ul>
+<li>we know what BFS is , it&rsquo;s about reaching all nodes in a particular pattern</li>
+<li>we use a Queue datastructure to aechive that particular pattern</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <hr />
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <blockquote>
+<p><strong>So ,  Djiskstra Algorithm is all about performing <code>BFS</code> using <code>Priority Queue</code> and applying <code>Edge Relaxation</code> on every node received .!!!</strong></p>
+</blockquote>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <h2>Dijkstra Implementation</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="n">graph</span><span class="p">:</span> <span class="n">Graph</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PathCost</span><span class="p">]:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <h2>Steps</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Prepration</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">existing_shortest_path</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Node</span><span class="p">,</span> <span class="n">PathCost</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">v</span><span class="p">:</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">}</span>    <span class="c1"># Weight here will signify the shortest distance to this node</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <ul>
+<li>visiting queue<ul>
+<li>it determines which node to visit next</li>
+</ul>
+</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">to_visit</span><span class="p">:</span> <span class="n">PriorityQueue</span> <span class="o">=</span> <span class="n">PriorityQueue</span><span class="p">()</span>
+    <span class="n">priority_queue_data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">PathCost</span><span class="p">,</span> <span class="n">Node</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
+    <span class="n">to_visit</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">priority_queue_data</span><span class="p">)</span>
+    <span class="n">existing_shortest_path</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>Starting point</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <ul>
+<li>idefinate loop until all nodes are visited</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">while</span> <span class="ow">not</span> <span class="n">to_visit</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <ul>
+<li><code>1</code>.visit a node ( using priority queue )</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">priority_queue_data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Weight</span><span class="p">,</span> <span class="n">Node</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_visit</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>                                                                   <span class="c1"># 1</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">source_node</span> <span class="o">=</span> <span class="n">priority_queue_data</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <ul>
+<li><code>2</code>.fetch it&rsquo;s neighbours</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">neighbour_info</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Node</span><span class="p">,</span> <span class="n">EdgeWeight</span><span class="p">]]</span> <span class="o">=</span> <span class="n">graph</span><span class="p">[</span><span class="n">source_node</span><span class="p">]</span>                                                           <span class="c1"># 2</span>
+        <span class="k">for</span> <span class="n">neighbour_node_data</span> <span class="ow">in</span> <span class="n">neighbour_info</span><span class="p">:</span>
+            <span class="n">neighbour_node</span><span class="p">,</span> <span class="n">edge_weight</span> <span class="o">=</span> <span class="n">neighbour_node_data</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <ul>
+<li><code>3</code>.iteratively apply Edge Relaxation on all Neighbours<ul>
+<li>if edge relaxation applies , then add that neighbour node to Priority Queue</li>
+</ul>
+</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">if</span> <span class="n">existing_shortest_path</span><span class="p">[</span><span class="n">neighbour_node</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">existing_shortest_path</span><span class="p">[</span><span class="n">source_node</span><span class="p">]</span> <span class="o">+</span> <span class="n">edge_weight</span><span class="p">:</span>                          <span class="c1"># 3</span>
+                <span class="n">new_shortest_cost_from_source_node_to_neighbour</span><span class="p">:</span> <span class="n">PathCost</span> <span class="o">=</span> <span class="n">existing_shortest_path</span><span class="p">[</span><span class="n">source_node</span><span class="p">]</span> <span class="o">+</span> <span class="n">edge_weight</span>
+                <span class="n">existing_shortest_path</span><span class="p">[</span><span class="n">neighbour_node</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_shortest_cost_from_source_node_to_neighbour</span>
+                <span class="n">to_visit</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="n">new_shortest_cost_from_source_node_to_neighbour</span><span class="p">,</span> <span class="n">neighbour_node</span><span class="p">))</span>                                     <span class="c1"># 3.1</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>Return results</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">existing_shortest_path</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <h2>Testing Entrypoint</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Graph Representation :&quot;</span><span class="p">,</span> <span class="n">GRAPH_REPRESENTATION</span><span class="p">)</span>
+    <span class="n">source</span><span class="p">:</span> <span class="n">Node</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">shortest_path</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PathCost</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="s1">&#39;Dijkstra</span><span class="se">\&#39;</span><span class="s1">s Algo Result&#39;</span><span class="si">:</span><span class="s2">^39</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">35</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;| Source | Target | Shortest Distance |&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">35</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">target_node</span><span class="p">,</span> <span class="n">shortest_path_value</span> <span class="ow">in</span> <span class="n">shortest_path</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;| </span><span class="si">{</span><span class="n">source</span><span class="si">:</span><span class="s2">^6</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">target_node</span><span class="si">:</span><span class="s2">^6</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">shortest_path_value</span><span class="si">:</span><span class="s2">^17</span><span class="si">}</span><span class="s2"> | &quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">35</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">)</span>
+    <span class="n">expected_shortest_path</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+    
+    <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">shortest_path</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">==</span> <span class="n">expected_shortest_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expected_shortest_path</span><span class="si">=}</span><span class="s2"> , but got : </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">shortest_path</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
