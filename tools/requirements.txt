@@ -1,0 +1,3 @@
+
+-r ./pycco_docs_generation/requirements.txt
+-r ./visualizer/requirements.txt

@@ -1,0 +1,3 @@
+networkx        #:visualize
+matplotlib      #:visualize
+numpy           #:visualize
