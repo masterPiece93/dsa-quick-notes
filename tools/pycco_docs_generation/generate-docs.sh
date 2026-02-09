@@ -12,3 +12,16 @@ while IFS= read -r file || [[ -n "$file" ]]; do
         echo "File not found: $file"
     fi
 done < "$FILE_LIST"
+
+# Trnasfer docs to central root
+
+SOURCE_DIR="./docs"
+DESTINATION_DIR="../../docs/python/graphs"
+
+# Remove existing docs
+rm -rf "$DESTINATION_DIR"
+
+# Move the source folder into the destination directory
+mv "$SOURCE_DIR" "$DESTINATION_DIR/"
+
+echo "Folder moved from $SOURCE_DIR to $DESTINATION_DIR"

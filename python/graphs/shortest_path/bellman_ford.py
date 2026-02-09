@@ -72,7 +72,7 @@ _So this is how we solve Real-Life Problems with Bellman-Ford-Moore Algorithm_
 
 - Lets Trace the paths manually as dijikstra would
     - we need to specify our `source` first
-    - dijkstra would find all shortest paths from this `source` to all nodes
+    - bellman-ford would find all shortest paths from this `source` to all nodes
 
 > Let's select source node as `0`
 
@@ -175,7 +175,6 @@ GRAPH_REPRESENTATION = """
 # Imports
 
 from typing import *
-from queue import PriorityQueue
 
 # Custom Types
 
