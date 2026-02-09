@@ -336,20 +336,9 @@ o      *
 </ul>
 <p>NOTE : we keep an <code>existing-shortest-path-storage</code> , which keeps the track of current shortest path to reach a node</p>
 <p>NOTE : we can keep <code>existing-shortest-path-storage</code> as a hashmap or a matrix , whichever suits the implementation .</p>
-<h4>Priority Queue</h4>
-<ul>
-<li>a priority queue is a special queue data structure that internally maintains an order of data points in a particular fashion based on a value at all times</li>
-<li>internally a priority queue is a heap data structure . heap datastructure can also have 2 flavours i) min heap ii) max heap</li>
-<li>basically at this point the only thing worth caring is that for Dijkstra Algorith we&rsquo;ll use <em>Min. Heap Priority Queue</em></li>
-</ul>
-<h4>BFS</h4>
-<ul>
-<li>we know what BFS is , it&rsquo;s about reaching all nodes in a particular pattern</li>
-<li>we use a Queue datastructure to aechive that particular pattern</li>
-</ul>
     </div>
     <div class='code'>
-      <div class="highlight"><pre></pre></div>
+      <div class="highlight"><pre><span class="n">existing_shortest_path</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Node</span><span class="p">,</span> <span class="n">PathCost</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">v</span><span class="p">:</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">}</span>    <span class="c1"># Weight here will signify the shortest distance to this node</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -358,10 +347,23 @@ o      *
       <div class='octowrap'>
         <a class='octothorpe' href='#section-12'>#</a>
       </div>
-      <hr />
+      <h4>Priority Queue</h4>
+<ul>
+<li>a priority queue is a special queue data structure that internally maintains an order of data points in a particular fashion based on a value at all times</li>
+<li>internally a priority queue is a heap data structure . heap datastructure can also have 2 flavours i) min heap ii) max heap</li>
+<li>
+<p>basically at this point the only thing worth caring is that for Dijkstra Algorith we&rsquo;ll use <em>Min. Heap Priority Queue</em></p>
+</li>
+<li>
+<p>visiting queue</p>
+<ul>
+<li>it determines which node to visit next</li>
+</ul>
+</li>
+</ul>
     </div>
     <div class='code'>
-      <div class="highlight"><pre></pre></div>
+      <div class="highlight"><pre><span class="n">to_visit</span><span class="p">:</span> <span class="n">PriorityQueue</span> <span class="o">=</span> <span class="n">PriorityQueue</span><span class="p">()</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -370,9 +372,11 @@ o      *
       <div class='octowrap'>
         <a class='octothorpe' href='#section-13'>#</a>
       </div>
-      <blockquote>
-<p><strong>So ,  Djiskstra Algorithm is all about performing <code>BFS</code> using <code>Priority Queue</code> and applying <code>Edge Relaxation</code> on every node received .!!!</strong></p>
-</blockquote>
+      <h4>BFS</h4>
+<ul>
+<li>we know what BFS is , it&rsquo;s about reaching all nodes in a particular pattern</li>
+<li>we use a Queue datastructure to aechive that particular pattern</li>
+</ul>
     </div>
     <div class='code'>
       <div class="highlight"><pre></pre></div>
@@ -384,10 +388,10 @@ o      *
       <div class='octowrap'>
         <a class='octothorpe' href='#section-14'>#</a>
       </div>
-      <h2>Dijkstra Implementation</h2>
+      <hr />
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="n">graph</span><span class="p">:</span> <span class="n">Graph</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PathCost</span><span class="p">]:</span></pre></div>
+      <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -396,7 +400,9 @@ o      *
       <div class='octowrap'>
         <a class='octothorpe' href='#section-15'>#</a>
       </div>
-      <h2>Steps</h2>
+      <blockquote>
+<p><strong>So ,  Djiskstra Algorithm is all about performing <code>BFS</code> using <code>Priority Queue</code> and applying <code>Edge Relaxation</code> on every node received .!!!</strong></p>
+</blockquote>
     </div>
     <div class='code'>
       <div class="highlight"><pre></pre></div>
@@ -408,10 +414,10 @@ o      *
       <div class='octowrap'>
         <a class='octothorpe' href='#section-16'>#</a>
       </div>
-      <p>Prepration</p>
+      <h2>Dijkstra Implementation</h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">existing_shortest_path</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Node</span><span class="p">,</span> <span class="n">PathCost</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">v</span><span class="p">:</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">}</span>    <span class="c1"># Weight here will signify the shortest distance to this node</span></pre></div>
+      <div class="highlight"><pre><span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="n">graph</span><span class="p">:</span> <span class="n">Graph</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PathCost</span><span class="p">]:</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -420,18 +426,10 @@ o      *
       <div class='octowrap'>
         <a class='octothorpe' href='#section-17'>#</a>
       </div>
-      <ul>
-<li>visiting queue<ul>
-<li>it determines which node to visit next</li>
-</ul>
-</li>
-</ul>
+      <h2>Steps</h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">to_visit</span><span class="p">:</span> <span class="n">PriorityQueue</span> <span class="o">=</span> <span class="n">PriorityQueue</span><span class="p">()</span>
-    <span class="n">priority_queue_data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">PathCost</span><span class="p">,</span> <span class="n">Node</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
-    <span class="n">to_visit</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">priority_queue_data</span><span class="p">)</span>
-    <span class="n">existing_shortest_path</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span></pre></div>
+      <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -440,10 +438,13 @@ o      *
       <div class='octowrap'>
         <a class='octothorpe' href='#section-18'>#</a>
       </div>
-      <p>Starting point</p>
+      <p>Prepration</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre></pre></div>
+      <div class="highlight"><pre>    
+    <span class="n">priority_queue_data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">PathCost</span><span class="p">,</span> <span class="n">Node</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
+    <span class="n">to_visit</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">priority_queue_data</span><span class="p">)</span>
+    <span class="n">existing_shortest_path</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -451,6 +452,18 @@ o      *
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>Starting point</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
       </div>
       <ul>
 <li>idefinate loop until all nodes are visited</li>
@@ -461,10 +474,10 @@ o      *
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-20'>
+  <div class='section' id='section-21'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-20'>#</a>
+        <a class='octothorpe' href='#section-21'>#</a>
       </div>
       <ul>
 <li><code>1</code>.visit a node ( using priority queue )</li>
@@ -476,10 +489,10 @@ o      *
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-21'>
+  <div class='section' id='section-22'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-21'>#</a>
+        <a class='octothorpe' href='#section-22'>#</a>
       </div>
       <ul>
 <li><code>2</code>.fetch it&rsquo;s neighbours</li>
@@ -492,10 +505,10 @@ o      *
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-22'>
+  <div class='section' id='section-23'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-22'>#</a>
+        <a class='octothorpe' href='#section-23'>#</a>
       </div>
       <ul>
 <li><code>3</code>.iteratively apply Edge Relaxation on all Neighbours<ul>
@@ -512,10 +525,10 @@ o      *
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-23'>
+  <div class='section' id='section-24'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-23'>#</a>
+        <a class='octothorpe' href='#section-24'>#</a>
       </div>
       <p>Return results</p>
     </div>
@@ -524,10 +537,10 @@ o      *
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-24'>
+  <div class='section' id='section-25'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-24'>#</a>
+        <a class='octothorpe' href='#section-25'>#</a>
       </div>
       <h2>Testing Entrypoint</h2>
     </div>
