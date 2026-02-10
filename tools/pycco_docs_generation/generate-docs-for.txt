@@ -3,3 +3,5 @@
 ../../python/graphs/sorting/topological_sort/kahn_algorithm_topological_sort.py
 ../../python/graphs/shortest_path/dijkstra.py
 ../../python/graphs/shortest_path/bellman_ford.py
+../../python/graphs/cycle_detection/in_undirected_graph_via_bfs.py
+../../python/graphs/cycle_detection/in_undirected_graph_via_dfs.py
