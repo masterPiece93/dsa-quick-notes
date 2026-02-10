@@ -4,32 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DSA</title>
+    <style>
+        .algoName {
+            font-weight: bold;
+            color: black;
+            font-style: oblique;
+            font-size: larger;
+        }
+        .tagType1 {
+            color: brown;
+        }
+        .tagType2 {
+            color: red;
+        }
+        body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; /* Ensures the body is at least the full height of the viewport */
+        margin: 0; /* Optional: Removes default body margins */
+        }
+
+        main {
+        flex: 1; /* This makes the main content area grow to fill available space */
+        }
+
+        footer {
+        /* Optional styling */
+        background-color: #f1f1f1; /* Light gray background */
+        color: #333; /* Dark text color */
+        padding: 1em 0;
+        text-align: center;
+        }
+
+    </style>
 </head>
 <body>
     
-    <section>
+    <section style="flex: 1; background-color: floralwhite;">
         <nav style="display: flex; flex-direction: column;">
             <h1 style="text-align: center;">DSA Quick Notes</h1>
         </nav>
     </section>
-    <section>
-        <header>
-            <h2>Graphs</h2>
-            <ol>
-                <li style="padding: 0.2em;">
-                    <a href="./python/graphs/bfs.html">Bfs</a>
-                </li>
-                <li style="padding: 0.2em;">
-                    <a href="./python/graphs/dfs.html">Dfs</a>
-                </li>
-                <li style="padding: 0.2em;">
-                    <a href="./python/graphs/bellman_ford.html">Bellman Ford Moore ( Shortest Path )</a>
-                </li>
-                <li style="padding: 0.2em;">
-                    <a href="./python/graphs/dijkstra.html">Dijkstra ( Shortest Path )</a>
-                </li>
-            </ol>
-        </header>
+    <section style="flex: 10;">
+            <div style="padding: 1em;">
+                <h2>Graphs</h2>
+                <ol>
+                    <li style="padding: 0.2em;">
+                        <a href="./python/graphs/bfs.html">Traversal - <span class="algoName">Bfs</span> <span class="tagType1"> Directed Graph </span></a>
+                    </li>
+                    <li style="padding: 0.2em;">
+                        <a href="./python/graphs/dfs.html">Traversal - <span class="algoName">Dfs</span> <span class="tagType1"> Directed Graph </span></a>
+                    </li>
+                    <li style="padding: 0.2em;">
+                        <a href="./python/graphs/bellman_ford.html">Shortest Path Finding - <span class="algoName">Bellman Ford Moore</span> <span class="tagType1"> Directed Graph </span></a>
+                    </li>
+                    <li style="padding: 0.2em;">
+                        <a href="./python/graphs/dijkstra.html">Shortest Path Finding - <span class="algoName">Dijkstra</span> <span class="tagType1"> Directed Graph </span></a>
+                    </li>
+                    <li style="padding: 0.2em;">
+                        <a href="./python/graphs/in_undirected_graph_via_bfs.html">Cycle Detection - using <span class="algoName">Bfs</span> <span class="tagType2"> Un Directed Graph </span></a>
+                    </li>
+                    <li style="padding: 0.2em;">
+                        <a href="./python/graphs/in_undirected_graph_via_dfs.html">Cycle Detection - using <span class="algoName">Dfs</span>  <span class="tagType2"> Un Directed Graph </span></a>
+                    </li>
+                </ol>
+            </div>
+
     </section>
+    <!-- The footer element -->
+    <footer>
+        <p>&copy; 2026 Dsa Quick Notes</p>
+        <p><a href="./privacy.html">Privacy Policy</a> | <a href="./terms.html">Terms of Service</a></p>
+        <div>
+            <span style="display: block;">Ankit Yadav ( ankit8290@gmail.com )</span>
+            <span style="display: block; color: purple;">Lead Engineer - Telus</span>
+        </div>
+    </footer>
 </body>
 </html>
