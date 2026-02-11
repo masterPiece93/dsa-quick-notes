@@ -5,3 +5,4 @@
 ../../python/graphs/shortest_path/bellman_ford.py
 ../../python/graphs/cycle_detection/in_undirected_graph_via_bfs.py
 ../../python/graphs/cycle_detection/in_undirected_graph_via_dfs.py
+../../python/graphs/minimum_spanning_tree/prims.py
